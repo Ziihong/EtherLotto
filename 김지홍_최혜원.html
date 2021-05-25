@@ -34,8 +34,6 @@
         let value, numWinner, num, totalAmount, winningNum, numPlayer, userAddress;
         var ETH = 1000000000000000000;
 
-        window.addEventListener('load', etherLotto);
-
         async function etherLotto() {
             if (window.ethereum){
                 window.accounts = await ethereum.request({method: 'eth_requestAccounts'});
@@ -337,7 +335,7 @@
                     "type": "function"
                 }
             ]
-            var address = "0x58D647D025c11803Bc67b7A098A401450f74A494"; // 배포할 때마다 변경
+            var address = "0x5333Ff69E1C7ffE05BD05711F7c2853d4090a415"; // 배포할 때마다 변경
 
             window.web3 = new Web3(window.ethereum); // window.ethereum 객체를 파라미터로 해서 새로운 web3 객체 생성
             contractInstance = await new window.web3.eth.Contract(abiobj, address);
@@ -441,7 +439,7 @@
                         document.getElementById('Res_PersonAmount').innerHTML = ' 0 ether';
                     }
                     else {
-                        document.getElementById('Res_winningNum').innerHTML = "아직 추점하지 않았습니다."
+                        document.getElementById('Res_winningNum').innerHTML = "아직 추첨하지 않았습니다."
                     }
                 }
                 catch (error) {
@@ -493,7 +491,6 @@
         <h3 class="Int_name"> 20191572 김지홍 & 20191686 최혜원 </h3>
         <br/>
         <a href = "https://youtu.be/S-mKOJ94DqU" target="_blank"><img id="Int_play" src="./img/youtube.png"/></a>
-        <!--        <div class="Int_name"> 이미지 클릭시 새 창 생김ㅋㅎ멘트 못정하겠다 </div>-->
     </div>
 
     <div id="Buy_screen">

@@ -13,7 +13,7 @@ contract EtherLotto {
 	uint public deadline;		// 마감일 (UnixTime)
 	string public status;		// 모금활동 상태
 	bool public ended;			// 모금 종료여부
-	uint public goalAmount  = 0.5 ether;		// 목표액 = 30 ether
+	uint public goalAmount  = 0.5 ether;		// 목표액 = 0.5 ether
 	uint public totalAmount = 0;	// 총 투자액
 	bool public alreadyState;   // 중복된 사용자 확인
 	mapping (uint => Player) public players;	// 투자자 관리를 위한 매핑
@@ -54,7 +54,7 @@ contract EtherLotto {
 	function purchase(uint playerNum) payable public{
 		// 모금이 끝났다면 처리 중단
 		require(!ended);
-		require(msg.value == 0.2 ether, "Just Pay 10 ETH"); // 10이더 이상일 때만 송금
+		require(msg.value == 0.2 ether, "Just Pay 0.2 ETH"); // 0.2이더일 때만 송금
 
 		for (uint i=0;i<numPlayers;i++){
 			if (msg.sender == players[i].addr) {
@@ -66,7 +66,7 @@ contract EtherLotto {
 
 		Player storage play = players[numPlayers++];
 		play.addr = msg.sender;
-		play.nums = playerNum; // JS에서 받아와야 함
+		play.nums = playerNum; // JS에서 받아오는
 		totalAmount += msg.value;
 
 	}
@@ -143,6 +143,6 @@ contract EtherLotto {
 	// 당첨 숫자 뽑기
 	function getRandomNumber() public view returns (uint) {
 		return uint(keccak256(abi.encodePacked(block.timestamp, block.difficulty, numPlayers)));
-	}
+	}값
 
 }
