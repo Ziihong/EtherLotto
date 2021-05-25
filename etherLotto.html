@@ -11,19 +11,19 @@
         });
         window.addEventListener("scroll", () => {
             if (window.scrollY >= 730) {
-                document.querySelectorAll(".tltItem")[0].style.backgroundColor = '#e5e5e5';
-                document.querySelectorAll(".tltItem")[1].style.backgroundColor = '#e5e5e5';
+                document.querySelectorAll(".tltItem")[0].style.backgroundColor = '#f4f4f4';
+                document.querySelectorAll(".tltItem")[1].style.backgroundColor = '#f4f4f4';
                 document.querySelectorAll(".tltItem")[2].style.backgroundColor = "white";
             }
             else if (window.scrollY > 140) {
-                document.querySelectorAll(".tltItem")[0].style.backgroundColor = '#e5e5e5';
+                document.querySelectorAll(".tltItem")[0].style.backgroundColor = '#f4f4f4';
                 document.querySelectorAll(".tltItem")[1].style.backgroundColor = "white";
-                document.querySelectorAll(".tltItem")[2].style.backgroundColor = '#e5e5e5';
+                document.querySelectorAll(".tltItem")[2].style.backgroundColor = '#f4f4f4';
             }
             else {
                 document.querySelectorAll(".tltItem")[0].style.backgroundColor = "white";
-                document.querySelectorAll(".tltItem")[1].style.backgroundColor = '#e5e5e5';
-                document.querySelectorAll(".tltItem")[2].style.backgroundColor = '#e5e5e5';
+                document.querySelectorAll(".tltItem")[1].style.backgroundColor = '#f4f4f4';
+                document.querySelectorAll(".tltItem")[2].style.backgroundColor = '#f4f4f4';
             }
         });
 
@@ -54,6 +54,25 @@
 
         async function getEtherLottoInstance() {
             var abiobj =[
+                {
+                    "inputs": [
+                        {
+                            "internalType": "address",
+                            "name": "InputAddress",
+                            "type": "address"
+                        }
+                    ],
+                    "name": "getMyNum",
+                    "outputs": [
+                        {
+                            "internalType": "uint256",
+                            "name": "",
+                            "type": "uint256"
+                        }
+                    ],
+                    "stateMutability": "nonpayable",
+                    "type": "function"
+                },
                 {
                     "inputs": [],
                     "name": "kill",
@@ -126,38 +145,6 @@
                             "internalType": "bool",
                             "name": "",
                             "type": "bool"
-                        }
-                    ],
-                    "stateMutability": "view",
-                    "type": "function"
-                },
-                {
-                    "inputs": [],
-                    "name": "getBalance",
-                    "outputs": [
-                        {
-                            "internalType": "uint256",
-                            "name": "",
-                            "type": "uint256"
-                        }
-                    ],
-                    "stateMutability": "view",
-                    "type": "function"
-                },
-                {
-                    "inputs": [
-                        {
-                            "internalType": "address",
-                            "name": "InputAddress",
-                            "type": "address"
-                        }
-                    ],
-                    "name": "getMyNum",
-                    "outputs": [
-                        {
-                            "internalType": "uint256",
-                            "name": "",
-                            "type": "uint256"
                         }
                     ],
                     "stateMutability": "view",
@@ -305,6 +292,19 @@
                     "type": "function"
                 },
                 {
+                    "inputs": [],
+                    "name": "userNum",
+                    "outputs": [
+                        {
+                            "internalType": "uint256",
+                            "name": "",
+                            "type": "uint256"
+                        }
+                    ],
+                    "stateMutability": "view",
+                    "type": "function"
+                },
+                {
                     "inputs": [
                         {
                             "internalType": "uint256",
@@ -337,13 +337,12 @@
                     "type": "function"
                 }
             ]
-            var address = "0x1a31D1Ba08Aa4245F391D1879f6e69E8C9833fdD";
+            var address = "0x58D647D025c11803Bc67b7A098A401450f74A494"; // 배포할 때마다 변경
 
             window.web3 = new Web3(window.ethereum); // window.ethereum 객체를 파라미터로 해서 새로운 web3 객체 생성
             contractInstance = await new window.web3.eth.Contract(abiobj, address);
             console.log(contractInstance);
             registerEventHandlers();
-            console.log(await contractInstance.methods["round"]().call());
         }
 
         function registerEventHandlers() {
@@ -372,7 +371,7 @@
                      total_eth = await contractInstance.methods["totalAmount"]().call();
                      goal_eth = await contractInstance.methods["goalAmount"]().call();
 
-                     var per = parseInt(total_eth)/parseInt(goal_eth) * 100;
+                     let per = parseInt(total_eth)/parseInt(goal_eth) * 100;
                      if (per >= 100) per = 100;
 
                      document.getElementById('Buy_nowPro').value = per;
@@ -426,20 +425,20 @@
                     totalAmount = await contractInstance.methods["totalAmount"]().call()
 
                     if (parseInt(winningNum) !== 0 && parseInt(numWinner) !== 0){
-                        document.getElementById('Res_winningNum').innerHTML = winningNum;
+                        document.getElementById('Res_winningNum').innerHTML = "당첨번호는 " +winningNum+"번 입니다^____^";
                         document.getElementById('Res_existWinner').innerHTML = "응모자는 총 "+numPlayer+"명입니다.";
 
                         document.getElementById('Res_getNumWinner').innerHTML = numWinner + '명';
                         document.getElementById('Res_totalAmount').innerHTML = parseInt(totalAmount)/ETH + ' ether';
                         document.getElementById('Res_PersonAmount').innerHTML = parseInt(totalAmount)/parseInt(numWinner)/ETH+ ' ether';
                     }
-                    else if (parseInt(numWinner) === 0){
+                    else if (parseInt(winningNum) !== 0 && parseInt(numWinner) === 0){
                         document.getElementById('Res_winningNum').innerHTML = winningNum;
                         document.getElementById('Res_existWinner').innerHTML = "당첨자가 없으므로 응모자 모두에게 이더를 돌려드립니다.";
 
-                        document.getElementById('Res_getNumWinner').innerHTML = numPlayer + '명';
-                        document.getElementById('Res_totalAmount').innerHTML = totalAmount+ ' ether';
-                        document.getElementById('Res_PersonAmount').innerHTML = (parseInt(totalAmount)/parseInt(numWinner)/ETH)+ ' ether';
+                        document.getElementById('Res_getNumWinner').innerHTML = '0 명';
+                        document.getElementById('Res_totalAmount').innerHTML = totalAmount/ETH + ' ether';
+                        document.getElementById('Res_PersonAmount').innerHTML = ' 0 ether';
                     }
                     else {
                         document.getElementById('Res_winningNum').innerHTML = "아직 추점하지 않았습니다."
@@ -456,9 +455,12 @@
                 try {
                     userAddress = document.getElementById("userAddressInput");
                     value = await contractInstance.methods.getMyNum(userAddress.value).send({from:accounts[0]});
+                    value = await contractInstance.methods["userNum"]().call()
+                    if (value === 0) value = "조회결과가 없습니다."
                     document.getElementById("Res_MyNum").innerHTML = value;
                 }
                 catch (error) {
+                    document.getElementById("Res_MyNum").innerHTML = "조회결과가 없습니다."
                     console.log('[getMyNum error]', error)
 
                 }
@@ -484,29 +486,28 @@
         <div class="tltItem"><a href="#Introduce_screen">소개 영상</a></div>
         <div class="tltItem"><a href="#Buy_screen">구매하기</a></div>
         <div class="tltItem"><a href="#Res_screen">당첨 결과</a></div>
-        <div><button id="pick">추첨하기</button></div>
     </div>
 
     <div id = "Introduce_screen">
         <h1 class="Int_name"> Project Name: EtherLotto </h1>
         <h3 class="Int_name"> 20191572 김지홍 & 20191686 최혜원 </h3>
         <br/>
-        <a href = "https://www.youtube.com/watch?v=BFXqTzkJJeM" target="_blank"><img id="Int_play" src="./img/youtube.png"/></a>
+        <a href = "https://youtu.be/S-mKOJ94DqU" target="_blank"><img id="Int_play" src="./img/youtube.png"/></a>
         <!--        <div class="Int_name"> 이미지 클릭시 새 창 생김ㅋㅎ멘트 못정하겠다 </div>-->
     </div>
 
     <div id="Buy_screen">
+        <h1>EtherLotto 구매하기</h1>
         <div>
-            # 이용안내<br>
             - 한 사람당 한 회 한 번의 기회가 있으며, 같은 사람이 여러 번 응모할 수 없습니다.<br>
             - 현금이 아닌 이더(ether)로 구매 가능합니다.<br>
-            - 3개의 번호로 게임에 응모할 수 있으며, 번호 선택 전 자동 또는 수동을 선택해야 합니다.<br>
-            - 수동 선택시 : 1부터 20까지의 숫자 중 3개의 번호를 직접 선택할 수 있습니다.<br>
-            - 자동 선택시 : 임의로 3개의 번호가 선택됩니다.<br>
+            - 1개의 번호로 게임에 응모할 수 있으며, 번호 선택 전 자동 또는 수동을 선택해야 합니다.<br>
+            - 수동 선택시 : 1부터 20까지의 숫자 중 1개의 번호를 직접 선택할 수 있습니다.<br>
+            - 자동 선택시 : 임의로 1개의 번호가 선택됩니다.<br>
             - 100이더가 모이면 자동으로 회당 회차가 종료됩니다.<br><br>
         </div>
-        <h3>제 1회 이더로또</h3>
-        <table>
+        <h3>번호 선택하기</h3>
+        <table id="Buy_info">
             <tbody>
                 <tr id="Buy_proDiv">
                     <td><button id="Buy_nowProBtn">현재 진행률</button></td>
@@ -584,18 +585,19 @@
 
 
     <div id="Res_screen">
+        <h1>EtherLotto 당첨 결과</h1>
+        <div><button id="pick">[관리자만 가능] 추첨하기</button></div>
         <div>
-            # 이용안내 <br>
             - 응모한 1개의 번호 일치시 당첨입니다. <br>
             - 당첨시 자동으로 해당 로또 구매 계좌(계정)로 당첨금액이 송금됩니다. <br><br>
         </div>
-        <h3>제 1회 이더로또 결과</h3>
+        <h3>이더로또 결과</h3>
         <button id="Res_checkBtn">확인하기</button>
-        <div class="Res_result">
-            <p>당첨 번호<span id="Res_winningNum"></span></p>
+        <div id="Res_resultWin">
+            <p><span id="Res_winningNum">확인하기 버튼을 눌러주세요!</span></p>
             <p id = "Res_existWinner"></p>
             <table id="Res_table">
-                <tr><th>당첨 인원</th><th>총 금액</th><th>인당 당첨 금액</th></tr>
+                <tr><th>당첨 인원</th><th>  총 금액  </th><th>인당 당첨 금액</th></tr>
                 <tr id="Res_info"><td id="Res_getNumWinner"></td><td id="Res_totalAmount"></td><td id="Res_PersonAmount"></td></tr>
             </table>
         </div>
@@ -603,7 +605,7 @@
             <h3>내 번호 확인하기</h3>
             <input id="userAddressInput" placeholder="자신의 address를 입력해주세요"/>
             <button id="Res_getMyNumBtn">조회하기</button>
-            <div class="Res_result"><span id="Res_MyNum"></span></div>
+            <div id="Res_resultNum"><span id="Res_MyNum">조회하기 버튼을 눌러주세요!</span></div>
         </div>
     </div>
 </body>

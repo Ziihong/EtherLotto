@@ -17,6 +17,7 @@ contract EtherLotto {
 	uint public totalAmount = 0;	// 총 투자액
 	bool public alreadyState;   // 중복된 사용자 확인
 	mapping (uint => Player) public players;	// 투자자 관리를 위한 매핑
+	uint public userNum;    // 사용자 선택 번호
 	uint public round = 0;
 
 	// 당첨자 정보
@@ -45,6 +46,7 @@ contract EtherLotto {
 		numWinner = 0;
 		alreadyState = false;
 		winningNum = 0;
+		userNum = 0;
 		round++;
 	}
 
@@ -70,12 +72,15 @@ contract EtherLotto {
 	}
 
 	/// 주소를 통해 조회하기
-	function getMyNum (address InputAddress) public view returns(uint){
+	function getMyNum (address InputAddress) public returns(uint){
 		for (uint i=0;i<numPlayers;i++){
-			if (players[i].addr == InputAddress)
-				return players[i].nums;
+			if (players[i].addr == InputAddress){
+				userNum = players[i].nums;
+				return userNum;
+			}
 		}
-		return 0;
+		userNum = 0;
+		return userNum;
 	}
 
 	/// 목표액 달성 여부 확인
@@ -92,7 +97,7 @@ contract EtherLotto {
 			// 컨트랙트 소유자에게 컨트랙트에 있는 모든 이더를 송금
 			ended = true;
 			randNum = getRandomNumber();	// 난수 생성
-			winningNum = randNum % 3 + 1;
+			winningNum = randNum % 20 + 1;
 			for(uint i=0; i<numPlayers; i++){
 				if(winningNum == players[i].nums){
 					winnerAddress.push(players[i].addr);
@@ -102,10 +107,10 @@ contract EtherLotto {
 
 			if (numWinner == 0) {
 				for (uint i=0;i<numPlayers;i++){
-    				if(!players[i].addr.send(0.2 ether)) {
-    					revert();
-    				}
-			    }
+					if(!players[i].addr.send(0.2 ether)) {
+						revert();
+					}
+				}
 			}
 			else {
 				for (uint j=0;j<numWinner;j++) {
@@ -133,10 +138,6 @@ contract EtherLotto {
 	/// 컨트랙트를 소멸시키기 위한 함수
 	function kill() public onlyOwner {
 		selfdestruct(owner);
-	}
-
-	function getBalance() view public returns(uint){
-		return address(this).balance;
 	}
 
 	// 당첨 숫자 뽑기
